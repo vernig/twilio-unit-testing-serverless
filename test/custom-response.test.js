@@ -34,6 +34,6 @@ describe('Test sending SMS through runtime environment', () => {
       }
     };
 
-    tokenFunction(context, { to: '+447824336224' }, callback);
+    tokenFunction(context, { to: process.env.DESTINATION_PHONE_NUMBER }, callback);
   });
 });
