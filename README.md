@@ -118,7 +118,9 @@ npm install
 ```
 Then edit the `.env` file adding the following info: 
 
-* `TWILIO_SID`: it's the account SID of the Twilio Account you used to initialize your serverless environment
+* `ACCOUNT_SID`: This is *NOT* your account SID but an API KEY (SKXXXXXXXXXXXXXXXXXXXXXXXX) that can be generated [here](https://www.twilio.com/console/sms/project/api-keys)
+* `AUTH_TOKEN`: This is the API secret generated with the key (see above bullet)
+* `TWILIO_SID`: this is the account SID of the Twilio Account you used to initialize your serverless environment
 * `OUTBOUND_PHONE_NUMBER`: this is the number Twilio used to send an SMS in the `custom-reponse.js` test
 * `DESTINATION_PHONE_NUMBER`: this is the number Twilio will send an SMS to in the `custom-reponse.js` test
 
