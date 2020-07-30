@@ -1,23 +1,23 @@
 # Unit testing with Jest for Twilio Serverless environment
 
-This repo wants to be an example of how to perform automated test with Jest on your Twilio Serverless environment. The idea is to perform the test without having to spin a web server, making this the ideal way to test your functions in a automated environment (CI/CD). 
+This repo is an example of how to perform automated test with Jest on your Twilio Serverless environment. The idea is to perform the test without having to spin a web server, making this the ideal way to test your functions in a automated environment (CI/CD). 
 
 The base of the repo is a new serverless project created with: 
 
 ```
 twilio serverless:init my-project
 ```
-No template have been used to create this repo. More info can be found on the official [Twilio Serverless Toolkit documentation page](https://www.twilio.com/docs/labs/serverless-toolkit). 
+No template has been used to create this repo. More info can be found on the official [Twilio Serverless Toolkit documentation page](https://www.twilio.com/docs/labs/serverless-toolkit). 
 
 Apart from the test assets (more on them later) a new function called `custom-response` has been added to show how to test `Twilio.Response` responses. 
 
 # Simple Test 
 
-The first example of test, is in `test\hello-world.test.js`. This one is used to test the default `hello-world.js` function. This function is supposed to return a TwiML for a voice response. In the test file, we use Jest's `expect().toBe()` to check the content TwiML. 
+The first example of a test, is in `test\hello-world.test.js`. This is used to test the default `hello-world.js` function. This function is supposed to return a TwiML document for a voice response. In the test file, we use Jest's `expect().toBe()` to check the content TwiML. 
 
 ## Token function 
 
-First thing we define a `tokenFunction` which rapresent the function we want to test. This is included using: 
+First thing we define a `tokenFunction` which represents the function we want to test. This is included using: 
 ```javascript
 const tokenFunction = require('../functions/hello-world').handler;
 ```
@@ -25,15 +25,15 @@ Note how we are importing the `handler()` function here (the one that is normall
 ```javascript
 tokenFunction(context, {}, callback);
 ```
-Let's dive into the two argument. 
+Let's dive into the two arguments. 
 
 ## Defining a _context_ for testing static methods
 
-In the Twilio Serverless environment, the `context` variables holds runtime context specific information, such as environment variables (e.g. usually defined in `.env` file) and the Twilio Client (accessible through `context.getTwilioClient()`). In our test environment, the `context` needs to be passed as first argument of the call, so we need to build it from scratch. 
+In the Twilio Serverless environment, the `context` variables holds runtime context specific information, such as environment variables (e.g. usually defined in `.env` file) and the Twilio Client (accessible through `context.getTwilioClient()`). In our test environment, the `context` needs to be passed as the first argument of the call, so we need to build it from scratch. 
 
-The first info to add are environment variables as well as authentication information (i.e. Account SID and auth token). The Twilio Serverless Toolkit automatically generate a `.env` file that contains API keys and API secret (instead of ACCOUNT SID and AUTH TOKEN). This is a design choice, and will have conseguences on how we perform some of the test (more on that later). Since for this test we are only going to use Twilio's client static method, we don't actually need to authenticate the client. So the `context` variable is empty. 
+The first items to add are environment variables as well as authentication information (i.e. Account SID and auth token). The Twilio Serverless Toolkit automatically generate a `.env` file that contains API keys and API secret (instead of ACCOUNT SID and AUTH TOKEN). This is a design choice, and will have consequences on how we perform some of the test (more on that later). Since for this test we are only going to use Twilio's client static method, we don't actually need to authenticate the client. So the `context` variable is empty. 
 
-Later on we are going to see another example where we fill-up the context information. 
+Later on we are going to see another example where we add information to the context. 
 
 ## Defining a callback
 
@@ -46,11 +46,11 @@ The callback is the actual function that will check the results passed by the fu
       done();
     };
 ```
-At the end of the function we are going to call `done()` to let Jest know that we are done with our test and the result can be displayed. As a test, try to change the expected XML above and see how the Jest framework returns an error. 
+At the end of the function we are going to call `done()` to let Jest know that we are done with our test and the result can be displayed. As a test, change the expected XML above and see how the Jest framework returns an error. 
 
 # Test a response that returns a `Twilio.Response` object 
 
-In many instances, you may want to customize the response sent to the browser / api client, for exxample changing the headers. In a Twilio Serverless environment, you would do that using the `Twilio.Response` object (more info [here](https://www.twilio.com/docs/runtime/functions/invocation#constructing-a-response)). For example if you want your function to return a `HTTP 204` you would use: 
+In many instances, you may want to customize the response sent to the browser / api client, for example changing the headers. In a Twilio Serverless environment, you would do that using the `Twilio.Response` object (more info [here](https://www.twilio.com/docs/runtime/functions/invocation#constructing-a-response)). For example if you want your function to return a `HTTP 204` you would use: 
 ```javascript
 exports.handler = function(context, event, callback) {
 	let response = new Twilio.Response();	
@@ -62,7 +62,7 @@ exports.handler = function(context, event, callback) {
 
 ## Mocking Twilio.Response()
 
-The problem with testing this code, is that the `Twilio.Response()` is not available in the local Twilio Environment (e.g. `twilio-run`). But we can extend what's available, mocking the response methods. We do that in the file `test/helpers/twilio-runtime.js`. In this file we extend the global Twilio object, adding a `Response()`: 
+The problem with testing this code, is that the `Twilio.Response()` is not available in the local Twilio Environment (e.g. `twilio-run`). But we can extend what's available, by mocking the response methods. We do that in the file `test/helpers/twilio-runtime.js`. In this file we extend the global Twilio object, adding a `Response()`: 
 ```javascript
   global.Twilio.Response = Response;
 ```
@@ -74,7 +74,7 @@ We then wrap all of that into the functions `setup(context)`. This function will
 
 ## Testing response
 
-The test is implmented in the file `test/custom-response.js`. In this case we intialize the `context` with the authentication imformation. Note that (as stated above) by default the serverless toolkit uses API Key and API secret. More info about this design decision can be found [here](https://github.com/twilio-labs/twilio-run/issues/34). This requires some _workaround_ in order to use it locally: you need to add the `TWILIO_SID` variable to `.env` file to specify which account SID the API key is belonging to. Alternatively you can replace `ACCOUNT_SID` and `AUTH_TOKEN` with _real_ account sid and auth token (not adviced). 
+The test is implemented in the file `test/custom-response.js`. In this case we intialize the `context` with the authentication imformation. Note that (as stated above) by default the serverless toolkit uses API Key and API secret. More info about this design decision can be found [here](https://github.com/twilio-labs/twilio-run/issues/34). This requires a _workaround_ in order to use it locally: you need to add the `TWILIO_SID` variable to `.env` file to specify which account SID the API key belongs to. Alternatively you can replace `ACCOUNT_SID` and `AUTH_TOKEN` with _real_ account sid and auth token (not advised). 
 
 Once defined the `context` variable, we need to load the helpers. We do that in: 
 
@@ -95,9 +95,9 @@ In addition to that, we _clean-up_ the test environment once the test is execute
   });
 ```
 
-With `teardown()` one of the helper functions defined in `test/helpers/twilio-runtime.js`. 
+With `teardown()` being one of the helper functions defined in `test/helpers/twilio-runtime.js`. 
 
-The test is then executed similarly to the simple test above. We have a callback function which test the return object from your function. In particular is testing one of the header and the body: 
+The test is then executed similarly to the simple test above. We have a callback function which test the return object from your function. In particular this is testing a response header and the body: 
 
 ```javascript
       try {
@@ -112,7 +112,7 @@ Note how we are using a `try catch` syntax here, as required by the Jest Async t
 
 # Execute the sample test 
 
-Once downaloded the repo, use the following command to install dependencies: 
+Once you've checked out the repo, use the following command to install dependencies: 
 ```
 npm install
 ```
@@ -136,7 +136,7 @@ You should see something like the following:
 
 # Important information about testing Twilio client with Jest 
 
-By default Jest execute all the network calls using `jsdom`. This creates an issue because Twilio client needs to change user-agent, and that is triggering the following error:  
+By default Jest execute all the network calls using `jsdom`. This creates an issue because Twilio client needs to change user-agent, and that triggers the following error:  
 
 ```
     console.error
