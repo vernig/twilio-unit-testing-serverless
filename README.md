@@ -167,3 +167,29 @@ To avoid this issue (and to considerably speed up your test execution), we need 
   }
 ...
 ```
+
+# GitHub Actions 
+
+The same test can be executed through GitHub Actions. In order to do that, a file needs to be added to `.github/workflows` folder. You can see a reference example [here](https://github.com/vernig/twilio-unit-testing-serverless/blob/master/.github/workflows/nodejs.yml).
+
+In our test we use `.env` file to specify some environment variable but this file cannot be includes in the repo since it contains sensitive information (such as the Twilio Auth Token). So to avoid these variable to leak, they need to be stored as GitHub Secret. In order to do that, go to Settings / Secrets (https://github.com/<gh_user>/<gh_repo>/settings/secrets) and add your secret there. 
+
+You can then use those secrets in your GitHub Actions configuration files to be used as environment variables: 
+```
+jobs:
+  build:
+    ...
+
+    steps:
+      ...
+      - name: npm install, build, and test
+        ...
+        env:
+          ...
+          ACCOUNT_SID: ${{secrets.ACCOUNT_SID}}
+          AUTH_TOKEN: ${{secrets.AUTH_TOKEN}}
+          TWILIO_SID: ${{secrets.TWILIO_SID}}
+          OUTBOUND_PHONE_NUMBER: ${{secrets.OUTBOUND_PHONE_NUMBER}}
+          DESTINATION_PHONE_NUMBER: ${{secrets.DESTINATION_PHONE_NUMBER}}
+```
+
