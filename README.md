@@ -1,3 +1,5 @@
+![Node CI](https://github.com/vernig/twilio-unit-testing-serverless/workflows/Node%20CI/badge.svg)
+
 # Unit testing with Jest for Twilio Serverless environment
 
 This repo is an example of how to perform automated test with Jest on your Twilio Serverless environment. The idea is to perform the test without having to spin a web server, making this the ideal way to test your functions in a automated environment (CI/CD). 
