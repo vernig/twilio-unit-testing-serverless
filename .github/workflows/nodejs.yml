@@ -24,3 +24,8 @@ jobs:
         env:
           CI: true
           NODE_ENV: test
+          ACCOUNT_SID: ${{secrets.ACCOUNT_SID}}
+          AUTH_TOKEN: ${{secrets.AUTH_TOKEN}}
+          TWILIO_SID: ${{secrets.TWILIO_SID}}
+          OUTBOUND_PHONE_NUMBER: ${{secrets.OUTBOUND_PHONE_NUMBER}}
+          DESTINATION_PHONE_NUMBER: ${{secrets.DESTINATION_PHONE_NUMBER}}
